@@ -1,0 +1,44 @@
+﻿@using Blazor.Auto.Descriptor
+
+@namespace Blazor.Auto.Component
+
+@inherits Blazor.Auto.Components.AutoFoundation.BaseComponent
+
+@if (Descriptor.Value.Tag == ValueTag.Bool)
+{
+    <Switch Checked="@Convert.ToBoolean(Descriptor.Value.T1)" CheckedChildren='@("是")' UnCheckedChildren='@("否")' OnChange="@(e => ValueChangedCallBack(e))" />
+}
+
+@if (Descriptor.Value.Tag == ValueTag.NullableBool)
+{
+    <Checkbox Checked="enable" CheckedChange="e => { enable = !enable; OnValueChange(); }">启用配置-</Checkbox>
+    <Switch Checked="@checkStatus" CheckedChildren='@("是")' UnCheckedChildren='@("否")' Disabled="@(!enable)" OnChange="@(e => ValueChangedCallBack(e))" />
+}
+
+@code
+{
+    bool enable, checkStatus;
+
+    protected override void OnParametersSet()
+    {
+        if (Descriptor.Value.T1 != null && bool.TryParse(Descriptor.Value.T1.ToString(), out var status))
+        {
+            enable = true;
+            checkStatus = status;
+        }
+    }
+
+    private void OnValueChange()
+    {
+        if (!enable)
+        {
+            ValueChangedCallBack<bool?>(null);
+        }
+        else
+        {
+            checkStatus = false;
+            ValueChangedCallBack(false);
+        }
+    }
+}
+

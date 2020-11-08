@@ -1,0 +1,78 @@
+﻿@using Blazor.Auto.Descriptor
+
+@namespace Blazor.Auto.Component
+
+@inherits Blazor.Auto.Components.AutoFoundation.BaseComponent
+
+<Button OnClick="OnClick" Style="width: 120px;">选择</Button>
+@{
+    <label style="margin-left: 5px;color: #0180cc">@($"{(selectedRows.Any() ? "已配置" : null)}")</label>
+}
+<Modal Title="@title"
+       Visible="@_visible"
+       OnCancel="OnCancel"
+       MaskClosable="true"
+       DestroyOnClose="true"
+       Footer=null>
+
+    <Input Placeholder="请输入名称或Id列表(Id以英文逗号结尾，如：101, 或 101,201)" Style="margin-bottom: 5px" TValue="string" ValueChanged="Search" />
+    @if (Descriptor.Value?.Tag != ValueTag.SelectEnum)
+    {
+        <div>
+            <Button OnClick="@(() =>{ selectedRows = filterItems; })">当前全选</Button>
+            <Button OnClick="@(() =>{ selectedRows.RemoveAll(x=> filterItems.Contains(x)); })">全部取消</Button>
+            <Switch Style="margin-bottom: 2px;" OnChange="status => { if (status) filterItems = selectedRows; else filterItems = Items.ToList(); }" CheckedChildren="查看全部" UnCheckedChildren="查看已选" />
+        </div>
+    }
+
+    <Table DataSource="datas" Total="filterItems.Count()" @bind-PageIndex="_pageIndex" @bind-PageSize="_pageSize">
+        @if (Descriptor.Value?.Tag != ValueTag.SelectEnum)
+        {
+            <Column Field="@context.Key">
+                <Checkbox Checked="@selectedRows.Any(x=> x.Key == context.Key)" CheckedChange="e => CheckChange(e, context)"></Checkbox>
+            </Column>
+        }
+        else
+        {
+            <Column Field="@context.Key">
+                <Radio TValue="bool" Checked="@(selectedKey == context.Key)" CheckedChange="e => RadioChange(context)"></Radio>
+            </Column>
+        }
+        <Column Field="@context.Value" />
+    </Table>
+    <div style="text-align: center">
+        <Button Type="primary" OnClick="Save">保存</Button>
+    </div>
+</Modal>
+
+@code{
+    int _pageIndex = 1;
+    int _pageSize = 10;
+
+    string title;
+    bool _visible = false;
+
+    void CheckChange(bool check, KeyValuePair<string, string> item)
+    {
+        if (check)
+            selectedRows.Add(item);
+        else
+            selectedRows.Remove(item);
+    }
+
+    void RadioChange(KeyValuePair<string, string> item)
+    {
+        selectedKey = item.Key;
+    }
+
+    void OnCancel()
+    {
+        OnParametersSet();
+        _visible = false;
+    }
+
+    void OnClick()
+    {
+        _visible = true;
+    }
+}

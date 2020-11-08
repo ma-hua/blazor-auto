@@ -1,0 +1,16 @@
+﻿@namespace Blazor.Auto.Component
+
+@inherits Blazor.Auto.Components.AutoFoundation.BaseComponent
+
+<DatePicker TValue="DateTime?" Value="defaulTime" ShowTime="true" OnChange="args => ValueChangedCallBack(args.Date)" Style="width: 240px"/>
+
+@code {
+    DateTime? defaulTime;
+
+    protected override void OnParametersSet()
+    {
+        defaulTime = Descriptor.Value.T1 as DateTime?;
+        base.OnParametersSet();
+    }
+
+}

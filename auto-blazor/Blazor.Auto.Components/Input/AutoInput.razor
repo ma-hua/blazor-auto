@@ -1,0 +1,36 @@
+﻿@namespace Blazor.Auto.Component
+
+@using Blazor.Auto.Descriptor
+@inherits Blazor.Auto.Components.AutoFoundation.BaseComponent
+
+@if (Descriptor.Value.Tag == ValueTag.String)
+{
+    <Input TValue="string" Value="@strValue" ValueChanged="@(e => { strValue = e; ValueChangedCallBack(e);})" Style="width: 240px"/>
+}
+
+@if (Descriptor.Value.Tag == ValueTag.Int || Descriptor.Value.Tag == ValueTag.NullableInt)
+{
+    <InputNumber TValue="int?" Value="@intValue" ValueChanged="@(e => { intValue = e; ValueChangedCallBack(e);})" Style="width: 120px"/>
+}
+
+@if (Descriptor.Value.Tag == ValueTag.Double || Descriptor.Value.Tag == ValueTag.NullableDouble)
+{
+    <InputNumber TValue="double?" Value="@doubleValue" ValueChanged="@(e => { doubleValue = e; ValueChangedCallBack(e);})" Style="width: 120px"/>
+}
+
+@code {
+    string strValue;
+    int? intValue;
+    double? doubleValue;
+
+    protected override void OnParametersSet()
+    {
+        strValue = Descriptor.Value.T1?.ToString();
+        intValue = Descriptor.Value.T1 as int?;
+        if (double.TryParse(Descriptor.Value.T1?.ToString(), out var value))
+        {
+            doubleValue = value;
+        }
+    }
+
+}

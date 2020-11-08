@@ -1,0 +1,18 @@
+﻿################################################################################
+# 此 .gitignore 文件已由 Microsoft(R) Visual Studio 自动创建。
+################################################################################
+
+/auto-blazor/auto-blazor/.vs/Blazor.Auto
+/auto-blazor/auto-blazor/Blazor.Auto/bin/Debug/netstandard2.1
+/auto-blazor/auto-blazor/Blazor.Auto/obj
+/auto-blazor/auto-blazor/Blazor.Auto.Components/bin/Debug/netstandard2.1
+/auto-blazor/auto-blazor/Blazor.Auto.Components/obj
+/auto-blazor/auto-blazor/Blazor.Auto.Test/bin/Debug/netstandard2.1
+/auto-blazor/auto-blazor/Blazor.Auto.Test/obj
+/auto-blazor/.vs/Blazor.Auto
+/auto-blazor/Blazor.Auto/bin/Debug/netstandard2.1
+/auto-blazor/Blazor.Auto/obj
+/auto-blazor/Blazor.Auto.Components/bin/Debug/netstandard2.1
+/auto-blazor/Blazor.Auto.Components/obj
+/auto-blazor/Blazor.Auto.Test/bin/Debug/netstandard2.1
+/auto-blazor/Blazor.Auto.Test/obj
