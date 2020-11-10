@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Blazor.Auto.SelectItem;
+using Blazor.Auto.Test.SelectItem;
 using Blazor.Auto.Test.SelectItem.Providers;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,11 +21,12 @@ namespace Blazor.Auto.Test
             builder.Services.AddAntDesign();
 
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+            builder.Services.AddSingleton<ISelectProviderRoute, SelectProviderRoute>();
             builder.ConfigureContainer(new AutofacServiceProviderFactory(cfg =>
                 {
                     cfg.RegisterAssemblyTypes(Assembly.GetExecutingAssembly());
-                    cfg.RegisterType<StoreGroupProvider>().Named<ISelectItemProvider>(StoreGroupProvider.Keyword).SingleInstance();
-                    cfg.RegisterType<PriceGroupProvider>().Named<ISelectItemProvider>(PriceGroupProvider.Keyword).SingleInstance();
+                    cfg.RegisterType<StoreGroupProvider>().Named<ISelectItemProvider>(SelectProviderRoute.StoreGroup).SingleInstance();
+                    cfg.RegisterType<PriceGroupProvider>().Named<ISelectItemProvider>(SelectProviderRoute.PriceGroup).SingleInstance();
                 }));
 
             await builder.Build().RunAsync();

@@ -6,6 +6,7 @@
 @using Blazor.Auto.Test.Model
 @using Microsoft.Extensions.DependencyInjection
 @using Blazor.Auto.Component
+@using Blazor.Auto.Test.SelectItem
 
 @for (int i = 0; i < descriptors.Count; i++)
 {
@@ -34,7 +35,7 @@
 
         @if (descriptor.Value.IsSelect())
         {
-            <AutoSelect @bind-Descriptor="descriptor" Items="@(descriptor.Value.SelectItems)" Keyword="@descriptor.Keyword" />
+            <AutoSelect @bind-Descriptor="descriptor" Items="@(descriptor.Value.SelectItems)" Keyword="@(SelectProviderRoute.GetProviderName(descriptor.Keyword))" />
         }
     </div>
 }

@@ -1,15 +1,21 @@
 ﻿@using Blazor.Auto.Descriptor
+@using Newtonsoft.Json
 
 @namespace Blazor.Auto.Component
-
 @inherits Blazor.Auto.Components.AutoFoundation.BaseComponent
 
-<Button OnClick="OnClick" Style="width: 120px;">选择</Button>
-@{
+@if (string.IsNullOrWhiteSpace(Keyword) && (Items == null || !Items.Any()))
+{
+    <ManualSelect @bind-Descriptor="Descriptor" />
+}
+else
+{
+    <Button OnClick="OnClick" Style="width: 120px;">选择</Button>
     <label style="margin-left: 5px;color: #0180cc">@($"{(selectedRows.Any() ? "已配置" : null)}")</label>
 }
+
 <Modal Title="@title"
-       Visible="@_visible"
+       Visible="@visible"
        OnCancel="OnCancel"
        MaskClosable="true"
        DestroyOnClose="true"
@@ -25,7 +31,7 @@
         </div>
     }
 
-    <Table DataSource="datas" Total="filterItems.Count()" @bind-PageIndex="_pageIndex" @bind-PageSize="_pageSize">
+    <Table DataSource="datas" Total="filterItems.Count()" @bind-PageIndex="pageIndex" @bind-PageSize="pageSize">
         @if (Descriptor.Value?.Tag != ValueTag.SelectEnum)
         {
             <Column Field="@context.Key">
@@ -46,11 +52,11 @@
 </Modal>
 
 @code{
-    int _pageIndex = 1;
-    int _pageSize = 10;
+    int pageIndex = 1;
+    int pageSize = 10;
 
     string title;
-    bool _visible = false;
+    bool visible;
 
     void CheckChange(bool check, KeyValuePair<string, string> item)
     {
@@ -68,11 +74,11 @@
     void OnCancel()
     {
         OnParametersSet();
-        _visible = false;
+        visible = false;
     }
 
     void OnClick()
     {
-        _visible = true;
+        visible = true;
     }
 }

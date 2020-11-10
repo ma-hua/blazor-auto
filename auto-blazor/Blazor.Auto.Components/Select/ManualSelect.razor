@@ -1,0 +1,42 @@
+﻿@using Blazor.Auto.Descriptor
+
+
+@inherits Blazor.Auto.Components.AutoFoundation.BaseComponent
+@namespace Blazor.Auto.Component
+
+<Input Id="@Id" Value="@json" TValue="string" OnChange="value => ValueChanged(value)" Placeholder="请输入Id列表，以英文逗号间隔" Style="width: 100%" />
+
+@code {
+    string json;
+    void ValueChanged(string value)
+    {
+        json = value;
+        if (Descriptor.Value.Tag == ValueTag.MultipleSelectInt)
+        {
+            ValueChangedCallBack(json.Split(',').Select(x => Convert.ToInt32(x)));
+        }
+        else
+        {
+            ValueChangedCallBack(json.Split(','));
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        try
+        {
+            if (Descriptor.Value.Tag == ValueTag.MultipleSelectInt && Descriptor.Value?.T2 != null)
+            {
+                json = string.Join(',', Descriptor.Value.T2);
+            }
+            if (Descriptor.Value.Tag == ValueTag.MultipleSelectString && Descriptor.Value?.T3 != null)
+            {
+                json = string.Join(',', Descriptor.Value.T3);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+    }
+}

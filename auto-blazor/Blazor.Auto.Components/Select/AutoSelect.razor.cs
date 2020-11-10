@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Autofac;
-using Blazor.Auto.Components.AutoFoundation;
 using Blazor.Auto.Descriptor;
 using Blazor.Auto.SelectItem;
 using Microsoft.AspNetCore.Components;
@@ -14,7 +11,7 @@ namespace Blazor.Auto.Component
     public partial class AutoSelect
     {
         [Inject]
-        public IComponentContext ComponentContext { get; set; }
+        public ISelectProviderRoute SelectProviderRoute { get; set; }
 
         [Parameter]
         public List<KeyValuePair<string, string>> Items { get; set; }
@@ -22,11 +19,11 @@ namespace Blazor.Auto.Component
         [Parameter]
         public string Keyword { get; set; }
 
-        List<KeyValuePair<string, string>> selectedRows;
+        List<KeyValuePair<string, string>> selectedRows = new List<KeyValuePair<string, string>>();
         string selectedKey;
 
         List<KeyValuePair<string, string>> filterItems = new List<KeyValuePair<string, string>>();
-        List<KeyValuePair<string, string>> datas => filterItems.Skip((_pageIndex - 1) * _pageSize).Take(_pageSize).ToList();
+        List<KeyValuePair<string, string>> datas => filterItems.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
 
         protected override async Task OnParametersSetAsync()
         {
@@ -35,19 +32,19 @@ namespace Blazor.Auto.Component
                 return;
             }
 
-            if (!ValueComponentExtension.IsEnumSelect(Descriptor.Value) && !string.IsNullOrWhiteSpace(Keyword))
+            if (!string.IsNullOrWhiteSpace(Keyword))
             {
                 try
                 {
-                    Items = await ComponentContext.ResolveNamed<ISelectItemProvider>(Keyword).GetSelectItemAsync();
+                    Items = await SelectProviderRoute.GetCacheAsync(Keyword);
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine(ex.Message);
                 }
             }
+
             filterItems = Items ?? new List<KeyValuePair<string, string>>();
-            selectedRows = new List<KeyValuePair<string, string>>();
             title = Descriptor.Description;
 
             if (Descriptor.Value.Tag == ValueTag.MultipleSelectString && Descriptor.Value.T3 != null)
@@ -66,6 +63,7 @@ namespace Blazor.Auto.Component
                 selectedRows = Items?.Where(x => x.Key == selectedKey).ToList();
             }
         }
+
 
         void Search(string context)
         {
@@ -96,7 +94,7 @@ namespace Blazor.Auto.Component
             {
                 Descriptor.Value.T1 = Convert.ToInt32(selectedKey);
             }
-            _visible = false;
+            visible = false;
             return DescriptorChanged.InvokeAsync(Descriptor);
         }
     }
