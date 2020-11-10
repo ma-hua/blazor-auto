@@ -25,8 +25,8 @@ namespace Blazor.Auto.Test
             builder.ConfigureContainer(new AutofacServiceProviderFactory(cfg =>
                 {
                     cfg.RegisterAssemblyTypes(Assembly.GetExecutingAssembly());
-                    cfg.RegisterType<StoreGroupProvider>().Named<ISelectItemProvider>(SelectProviderRoute.StoreGroup).SingleInstance();
-                    cfg.RegisterType<PriceGroupProvider>().Named<ISelectItemProvider>(SelectProviderRoute.PriceGroup).SingleInstance();
+                    cfg.RegisterType<StoreGroupProvider>().Named<ISelectItemProvider>(SelectProviderRoute.StoreGroup).InstancePerDependency();
+                    cfg.RegisterType<PriceGroupProvider>().Named<ISelectItemProvider>(SelectProviderRoute.PriceGroup).InstancePerDependency();
                 }));
 
             await builder.Build().RunAsync();

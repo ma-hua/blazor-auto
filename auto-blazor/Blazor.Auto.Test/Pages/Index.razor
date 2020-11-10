@@ -57,11 +57,13 @@
 
     List<FieldDescriptor> descriptors;
 
-    protected override void OnParametersSet()
+    protected override Task OnParametersSetAsync()
     {
         descriptors = Model.ToDescriptor().ToList();
-        base.OnParametersSet();
+        return base.OnParametersSetAsync();
     }
+
+
 
 }
 

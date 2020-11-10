@@ -10,12 +10,11 @@ namespace Blazor.Auto.Test.SelectItem
     public class SelectProviderRoute : ISelectProviderRoute
     {
         public const string PriceGroup = "PriceGroup";
-       
         public const string StoreGroup = "StoreGroup";
 
+        private readonly SemaphoreSlim _mutex = new SemaphoreSlim(1);
         public ConcurrentDictionary<string, List<KeyValuePair<string, string>>> ItemCache { get; set; } = new ConcurrentDictionary<string, List<KeyValuePair<string, string>>>();
-        private static SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
-
+        
         private readonly IComponentContext _componentContext;
         public SelectProviderRoute(IComponentContext componentContext)
         {
@@ -34,9 +33,11 @@ namespace Blazor.Auto.Test.SelectItem
 
         public async Task<List<KeyValuePair<string, string>>> GetCacheAsync(string keyword)
         {
-            await _semaphore.WaitAsync();
+
             try
             {
+                await _mutex.WaitAsync();
+
                 if (ItemCache.Keys.Contains(keyword))
                 {
                     return ItemCache.GetValueOrDefault(keyword, new List<KeyValuePair<string, string>>());
@@ -52,8 +53,10 @@ namespace Blazor.Auto.Test.SelectItem
             }
             finally
             {
-                _semaphore.Release();
+                _mutex.Release();
             }
+            
+            
 
             return new List<KeyValuePair<string, string>>();
         }
